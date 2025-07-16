@@ -1,7 +1,20 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin_id'])) {
+    header('Location: ../views/login.php');
+    exit;
+}
+?>
+<?php
 require_once '../config/db.php';
 $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->query("
+  SELECT p.*, c.name AS category_name
+  FROM products p
+  LEFT JOIN categories c ON p.category_id = c.id
+  ORDER BY p.created_at DESC
+");
 ?>
 <h2>Product List</h2>
 <table class="table table-striped table-hover">

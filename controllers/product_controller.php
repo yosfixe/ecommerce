@@ -1,3 +1,4 @@
+<?php
 // UPDATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     $id = $_POST['id'];
@@ -16,6 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
             $imagePath = $imageName;
         }
     }
+    $category_id = $_POST['category_id'] ?? null;
+
+    $stmt = $pdo->prepare("INSERT INTO products (name, price, description, image, category_id, created_at)
+                       VALUES (?, ?, ?, ?, ?, NOW())");
+    $stmt->execute([$name, $price, $description, $imagePath, $category_id]);
 
     if ($imagePath) {
         $stmt = $pdo->prepare("UPDATE products SET name=?, price=?, description=?, image=? WHERE id=?");
@@ -38,3 +44,4 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     header('Location: ../views/list.php');
     exit;
 }
+?>
